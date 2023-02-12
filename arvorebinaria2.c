@@ -28,6 +28,13 @@ No* inserirNovaVersao(No *raiz, int valor){
     }
 }
 
+int tamanho(No *raiz){
+    if(raiz == NULL)
+        return 0;
+    else    
+        return 1 + tamanho(raiz->esquerda) + tamanho(raiz->direita);
+}
+
 void imprimir(No *raiz){
     if(raiz != NULL){
         imprimir(raiz->esquerda);
@@ -62,6 +69,7 @@ int main(){
                 printf("\n Impressao da arvore binaria: \n");
                 imprimir(raiz);
                 printf("\n");
+                printf("Tamanho: %d\n", tamanho(raiz));
                 break;
                 
             default:
