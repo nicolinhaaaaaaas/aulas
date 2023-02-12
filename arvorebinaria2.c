@@ -9,7 +9,7 @@ typedef struct no{
 
 typedef struct{
     No *raiz;
-}ArvB;
+}ArvB; 
 
 No* inserirNovaVersao(No *raiz, int valor){
     if(raiz == NULL){
@@ -28,11 +28,27 @@ No* inserirNovaVersao(No *raiz, int valor){
     }
 }
 
-int tamanho(No *raiz){
+int tamanho(No *raiz){ //pra ver o tamanho da arvore
     if(raiz == NULL)
         return 0;
     else    
         return 1 + tamanho(raiz->esquerda) + tamanho(raiz->direita);
+}
+
+int buscar(No *raiz, int chave){
+    if(raiz == NULL){
+        return 0; //se retornar 0 é pq n tem na arvore
+    }
+    else{
+        if(raiz->conteudo == chave)
+            return 1; // se retornar 1 é pq tem na arvore
+        else{
+            if(chave < raiz->conteudo)
+                return buscar(raiz->esquerda, chave);
+            else
+                return buscar(raiz->direita, chave);
+        }
+    }
 }
 
 void imprimir(No *raiz){
@@ -44,6 +60,50 @@ void imprimir(No *raiz){
     }
 }
 
+No* remover(No *raiz, int chave){
+    if(raiz == NULL){
+        printf("Valor nao encontrado!\n");
+        return NULL;
+    }
+    else{
+        if(raiz->conteudo == chave){
+            //remove nos folhas (nos sem filhos)
+            if(raiz->esquerda ==NULL && raiz->direita == NULL){
+                free(raiz);
+                return NULL;
+            }
+            else{
+            // remover nós que possuem apenas 1 filho, na direita ou na esquerda
+                if(raiz->esquerda == NULL || raiz->direita == NULL){
+                    No *aux;
+                    if(raiz->esquerda != NULL)
+                        aux = raiz->esquerda;
+                    else    
+                        aux = raiz->direita;
+                    free(raiz);
+                    return aux;
+                }
+                else{
+                    No *aux = raiz->esquerda;
+                    while(aux->direita != NULL)
+                        aux = aux->direita;
+                    raiz->conteudo = aux->conteudo;
+                    aux->conteudo = chave;
+                    raiz->esquerda = remover(raiz->esquerda, chave);
+                    return raiz;            
+                }
+            }
+        }
+        else{
+            if(chave < raiz->conteudo)
+                raiz->esquerda = remover(raiz->esquerda, chave);
+            else
+                raiz->direita = remover(raiz->direita, chave);
+            return raiz;
+        }
+    }
+}
+
 int main(){
     int op, valor;
     ArvB arv;
@@ -52,7 +112,7 @@ int main(){
     No *raiz = NULL;
 
     do{
-        printf("\n 0 - Sair \n 1 - inserir \n 2 - imprimir\n");
+        printf("\n 0 - Sair \n 1 - inserir \n 2 - imprimir\n 3 - Buscar\n 4 - remover\n");
         scanf("%d", &op);
 
         switch(op){
@@ -60,10 +120,9 @@ int main(){
                 printf("\n Saindo... \n");
                 break;
             case 1:
-                printf("Digite um valor:");
+                printf("\n Digite um valor:");
                 scanf("%d", &valor);
                 raiz = inserirNovaVersao(raiz, valor);
-                //inserir(&arv, valor);
                 break;
             case 2:
                 printf("\n Impressao da arvore binaria: \n");
@@ -71,10 +130,20 @@ int main(){
                 printf("\n");
                 printf("Tamanho: %d\n", tamanho(raiz));
                 break;
-                
+            case 3:
+                printf("\n Qual valor deseja buscar?");
+                scanf("%d", &valor);
+                printf("Resultado da busca: %d\n", buscar(raiz, valor));
+                break;
+            case 4:
+                printf("\n Digite um valor a ser removido:");
+                scanf("%d", &valor);
+                raiz = remover(raiz, valor);
+                printf("\n Valor removido.");
+                break;
             default:
                 printf("\n Opcao invalida... \n");
         }
     }while(op != 0 );
 
-}
+} 
