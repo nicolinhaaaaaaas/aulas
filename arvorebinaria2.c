@@ -51,6 +51,20 @@ int buscar(No *raiz, int chave){
     }
 }
 
+void altura(No *raiz){
+	if(raiz == NULL){
+		return -1;
+	}
+	else{
+		int esq = altura(raiz->esquerda);
+		int dir = altura(raiz->direita);
+		if(esq > dir)
+			return esq + 1;
+		else
+			return dir + 1;
+	}
+}
+
 void imprimir(No *raiz){
     if(raiz != NULL){
         imprimir(raiz->esquerda);
